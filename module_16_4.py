@@ -8,7 +8,7 @@ users = []
 
 
 class User(BaseModel):
-    id: int = None
+    id: int
     username: str
     age: int
 
@@ -26,7 +26,7 @@ async def create_users(
         username: Annotated[str, Path(min_length=5, max_length=20,
                                       description="Enter username", example="UrbanUser")],
         age: Annotated[int, Path(ge=18, le=120, description="Enter age", example="24")]) -> User:
-    user_id = str(len(users) + 1)
+    user_id = max(users, key=lambda x: int(x.id)).id + 1 if users else 1
     user = User(id=user_id, username=username, age=age)
     users.append(user)
     return user
